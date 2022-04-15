@@ -9,20 +9,12 @@ def construction(data):
     transitions = list((data)['transitions'])
     input = (data)['input']
     output = (data)['output']
-    print(input)
     mOutPut = indicenceMatrixOutPut(input, places, transitions)
     mInPut = indicenceMatrixInPut(output, places, transitions)
-    #print(mInPut)
-    #print(mOutPut)
     mIndicence = indicenceMatrix(mInPut, mOutPut)
-    print(tokens)
-    print(mIndicence)
-    print("######")
     arratshooting = shooting(transitions, data['shooting'])
-    print(arratshooting)
     newState = statusChange(tokens,mIndicence,arratshooting)
-    print(newState)
-    graf(places,transitions,mOutPut,mInPut,tokens)
+    graf(places,transitions,mOutPut,mInPut,newState)
     return newState
 
 # a+
