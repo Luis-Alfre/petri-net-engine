@@ -1,5 +1,6 @@
 from lib2to3.pgen2 import token
 import numpy as np
+from api.app.petriNets.graph import graf
 
 
 def construction(data):
@@ -11,10 +12,18 @@ def construction(data):
     print(input)
     mOutPut = indicenceMatrixOutPut(input, places, transitions)
     mInPut = indicenceMatrixInPut(output, places, transitions)
-    print(mInPut)
-    print(mOutPut)
+    #print(mInPut)
+    #print(mOutPut)
     mIndicence = indicenceMatrix(mInPut, mOutPut)
+    print(tokens)
     print(mIndicence)
+    print("######")
+    arratshooting = shooting(transitions, data['shooting'])
+    print(arratshooting)
+    newState = statusChange(tokens,mIndicence,arratshooting)
+    print(newState)
+    graf(places,transitions,mOutPut,mInPut,tokens)
+    return newState
 
 # a+
 def indicenceMatrixInPut(input, places, transition):
@@ -46,8 +55,23 @@ def indicenceMatrixOutPut(input, places, transition):
     return(matrixInput)
 
 
-
-
 def indicenceMatrix(mInPut, mOutPut):
-    matriz = mInPut - mOutPut
-    return matriz
+    matrix = mInPut - mOutPut
+    return matrix
+
+
+def shooting(transitions, shootingData):
+    arrayShooting = np.zeros(np.size(transitions))
+
+    for i in shootingData:
+        arrayShooting[transitions.index(i)] += 1
+
+    return(arrayShooting)
+
+
+def statusChange(tokens, mIndicence, arratshooting):
+    newStatus = tokens + np.dot(arratshooting,mIndicence)
+    return newStatus
+
+def validationFormat():
+    pass
