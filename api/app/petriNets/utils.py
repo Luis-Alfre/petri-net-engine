@@ -1,6 +1,9 @@
+import ast
 from lib2to3.pgen2 import token
+from matplotlib.font_manager import json_dump
 import numpy as np
 from api.app.petriNets.graph import graf
+import json
 
 
 def construction(data):
@@ -12,7 +15,7 @@ def construction(data):
     mOutPut = indicenceMatrixOutPut(input, places, transitions)
     mInPut = indicenceMatrixInPut(output, places, transitions)
     mIndicence = indicenceMatrix(mInPut, mOutPut)
-    arratshooting = shooting(transitions, data['shooting'])
+    arratshooting = shootings(transitions, data['shooting'])
     newState = statusChange(tokens,mIndicence,arratshooting)
     graf(places,transitions,mOutPut,mInPut,newState)
     return newState
@@ -52,7 +55,7 @@ def indicenceMatrix(mInPut, mOutPut):
     return matrix
 
 
-def shooting(transitions, shootingData):
+def shootings(transitions, shootingData):
     arrayShooting = np.zeros(np.size(transitions))
 
     for i in shootingData:
@@ -67,3 +70,77 @@ def statusChange(tokens, mIndicence, arratshooting):
 
 def validationFormat():
     pass
+
+
+
+
+    
+def Analytics(places,tokens,transitions,input,output,shooting):
+    arrayPlaces = AnalyticsTexts(places)
+    arrayTokens = list(np.array(AnalyticsTexts(tokens), dtype = 'float'))
+    arrayTransitions = AnalyticsTexts(transitions)
+    arrayShooting = AnalyticsTexts(shooting)
+    arrayInput = AnalyticsTextsComple(input)
+    arrayOutPut = AnalyticsTextsComple(output)
+    mOutPut = indicenceMatrixOutPut(arrayInput, arrayPlaces, arrayTransitions)
+    mInPut = indicenceMatrixInPut(arrayOutPut, arrayPlaces, arrayTransitions)
+    mIndicence = indicenceMatrix(mInPut, mOutPut)
+    arratshooting = shootings(arrayTransitions, arrayShooting)
+    newState = statusChange(arrayTokens,mIndicence,arratshooting)
+    return graf(arrayPlaces,arrayTransitions,mOutPut,mInPut,newState)
+    
+
+
+def AnalyticsTexts(places):
+    arrayPlaces = []
+    places = places.replace(" ", "")
+    for i in range(len(places)):
+        if(places[i] == ','):
+            ini = i
+            end = places.find(',',ini+1)
+            cad =places[slice(int(ini+1),int(end))]
+            arrayPlaces.append(cad)
+    arrayPlaces.pop()
+    return arrayPlaces
+
+def AnalyticsAux(places):
+    arrayPlaces = []
+    places = places.replace(" ", "")
+    for i in range(len(places)):
+        if(places[i] == '-'):
+            ini = i
+            end = places.find('-',ini+1)
+            cad =places[slice(int(ini+1),int(end))]
+            arrayPlaces.append(cad)
+    arrayPlaces.pop()
+    return arrayPlaces
+
+def AnalyticsTextsComple(places):
+    arrayTransition = []
+    arrayPlaces = []
+    places = places.replace(" ", "")
+    for i in range(len(places)):
+        if(places[i] == ','):
+            ini = i
+            end = places.find('(',ini+1)
+            cad =places[slice(int(ini+1),int(end))]
+            arrayTransition.append(cad)
+
+    arrayTransition.pop()
+    index = 0
+    diccionary = dict()
+    for i in range(len(places)):
+            if(places[i] == '('):
+                ini = i
+                end = places.find(')',ini+1)
+                arrayPlaces = AnalyticsAux(places[slice(int(ini+1),int(end))])
+                diccionary [arrayTransition[index]] = arrayPlaces
+                index+=1
+    return diccionary
+
+
+
+
+
+
+

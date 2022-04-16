@@ -4,7 +4,7 @@ from graphviz import Digraph
 
 def graf(places, transitions, mOutput, mInput, tokens):
 
-    f = Digraph('TrafficLights', filename='fsm', format='png')
+    f = Digraph('TrafficLights', filename='image', directory='./static',format='png')
 
     for i in transitions:
         f.attr('node', shape='box')
@@ -15,8 +15,6 @@ def graf(places, transitions, mOutput, mInput, tokens):
       f.node(places[i],label=str(tokens[i]))  
 
     for i in range(len(mOutput[0])):
-        print(len(mOutput))
-        print(len(mOutput[0]))
         for j in range(len(mOutput)):
             if mOutput[j][i] != 0:
                f.edge(places[i],transitions[j])
